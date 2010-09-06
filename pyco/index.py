@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+<<<<<<< HEAD
 # This file is part of PyCo.
 # 
 # PyCo is free software: you can redistribute it and/or modify
@@ -17,6 +18,8 @@
 # along with PyCo.  If not, see <http://www.gnu.org/licenses/>.
 
 
+=======
+>>>>>>> origin/master
 import os
 import sys
 
@@ -54,6 +57,7 @@ cgitb.enable()
 
 
 #===============================================================================
+<<<<<<< HEAD
 # Returns the pages on a given path
 #===============================================================================
 def getSubPages(path):
