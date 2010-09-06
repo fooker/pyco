@@ -1,0 +1,36 @@
+Software requirements
+=====================
+
+To run PyCo you need a running web server as Apache or LightTPD and a python
+interpreter.
+
+The following python modules are also required:
+  - creoleparser
+  - jinja2
+
+To install the python modules on debian based linux systems you could run the
+following command:
+  apt-get install python-creoleparser python-jinja2
+
+
+Web server requirements
+=======================
+
+This installation method requires that running of CGI scripts is allowed from
+everywhere in the document root of your web server. It might be insecure and
+other methods will be available, but I have never tested them.
+
+The python interpreter must be configured as CGI script handler.
+
+
+Installation
+============
+
+Copy the file 'index.py' to the document root of your web server and create the
+folders 'template' and 'pages'.
+
+Its highly recommended that the special page '404' exits in the pages root. To
+create it create the file 'pages/404' and fill it with some nifty
+page-not-found message.
+
+Now you can create the pages and the template. See the file 'README'.

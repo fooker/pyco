@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>{{ site_title }} :: {{ path[1:] }} </title>
+    <style type="text/css" media="screen">{% include "main.css" %}</style>
+  </head>
+  <body>
+    <H3>Breadcrumbs:</H3>
+      <i>using path_parts:</i>
+      {% for p in path_parts %}
+      =&gt;&nbsp;{{ p }}&nbsp; 
+      {% endfor %}
+      <br />
+      
+      <i>using resolved_path_parts:</i>
+      {% for p in resolved_path_parts %}
+      =&gt;&nbsp;{{ p }}&nbsp; 
+      {% endfor %}
+      <br />
+    
+    <H3>Menu:</H3>
+      <ul>
+      {% for p in getSubPages('/') recursive %}
+        <li>
+          <a href="/{{ base_name }}/{{ p }}">{{ splitPath(p)[-1] }}&nbsp;=&gt;&nbsp;{{ p }}</a>
+          {% if getSubPages(p) %}
+            <ul>
+              {{ loop(getSubPages(p)) }}
+            </ul>
+          {% endif %}
+      {% endfor %}
+      </ul>
+    
+    <H3>Content:</H3>
+      {{ path[1:] }}<br />
+      {{ content }}
+  </body>
+</html>
