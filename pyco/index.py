@@ -19,6 +19,8 @@
 import os
 import sys
 
+import codecs
+
 import cgi
 import cgitb
 
@@ -30,26 +32,37 @@ import jinja2
 # Configuration
 #===============================================================================
 
-# The base path of the pyco installation 
-base_path = '/home/dustin/workspaces/private/pyco/pyco'
-
-# The name of the script
-base_name = 'index.py'
-  
-# The base bath of the pages tree
-pages_path = base_path + '/pages'
-  
-# The base path of the template
-template_path = base_path + '/template'
-
-# The name of the template
-template_name = 'main.html'
-
-# The title of the web site
-site_title = 'PyCo Test'
-
 # Enable CGI debug output
 cgitb.enable()
+
+# The settings container
+settings = {}
+
+# The base path of the pyco installation 
+settings['base_path'] = '/home/dustin/workspaces/private/pyco/pyco'
+
+# The name of the script
+settings['base_name'] = 'index.py'
+
+# The title of the web site
+settings['site_title'] = 'PyCo'
+  
+# The base bath of the pages tree
+settings['pages_path'] = settings['base_path'] + '/pages'
+  
+# The name of the template
+settings['template_name'] = 'main.html'
+
+# Define special pages
+settings['pages_special'] = {}
+settings['pages_special']['not_found'] = '/404'
+
+# Set of pages ignored in trees, listings, etc...
+settings['pages_ignored'] = []
+settings['pages_ignored'] += settings['pages_special']['not_found']
+
+# The base path of the template
+settings['template_path'] = settings['base_path'] + '/template'
 
 
 #===============================================================================
@@ -70,10 +83,14 @@ def getSubPages(path):
   childs = []
   for l in list:
     # Make real path from path
-    real_path = realPath(path + '/' + l)
+    real_path = realPath(os.path.normpath(path + '/' + l))
     
     # Check if file is hidden
-    if l.startswith('.') or l == '404':
+    if l.startswith('.'):
+      continue
+    
+    # Check if file should be ignored
+    if l in settings['pages_ignored']:
       continue
     
     # Check if file is directory, link or regular file
@@ -84,10 +101,12 @@ def getSubPages(path):
     
     # Add to list of valid child
     if path != '/':
-      childs.append(path + '/' + l)
+      childs.append(os.path.normpath(path + '/' + l))
+      
     else:
-      childs.append('/' + l)
-  
+      childs.append(os.path.normpath('/' + l))
+      
+  # Return list of sub pages
   return childs
 
 
@@ -95,14 +114,14 @@ def getSubPages(path):
 # Splits the path into path parts
 #===============================================================================
 def splitPath(path):
-  return path.split('/')
+  return path.split('/')[1:]
 
 
 #===============================================================================
 # Returns the real path for the given path 
 #===============================================================================
 def realPath(path):
-  return os.path.normpath(pages_path + '/' + path)
+  return os.path.normpath(settings['pages_path'] + path)
 
 
 #===============================================================================
@@ -122,15 +141,18 @@ def resolvePath(path):
   
   # Check if file is link
   if os.path.islink(real_path):
+    # Get base path
+    base_path = os.path.dirname(path)
+    
     # Get target of link
-    link = os.path.normpath('/' + os.readlink(real_path))
+    link = os.path.normpath(base_path + '/' + os.readlink(real_path))
     
     # Resolve link recursive
     return resolvePath(link)
   
   # Check if file is directory
   if os.path.isdir(real_path):
-    return resolvePath(path + '/.content')
+    return resolvePath(os.path.normpath(path + '/.content'))
   
   # Check if file is normal file
   if os.path.isfile(real_path):
@@ -144,61 +166,92 @@ def resolvePath(path):
 # Main function
 #===============================================================================
 if __name__ == '__main__':
-  
+
   # Send HTTP content type
-  print 'Content-Type: text/html;charset=utf-8'
+  print 'Content-Type: text/html;charset=utf-8'  
+  
+  # Build site context
+  site = {}
+  site['title'] = settings['site_title']
+  site['base'] = settings['base_name']
+  
+  # Build function context
+  pyco = {}
+  pyco['splitPath'] = splitPath
+  pyco['getSubPages'] = getSubPages
+  
+  # Build page context
+  page = {}
   
   # Get requested path
   if os.environ.has_key('PATH_INFO'):
-    path = os.environ['PATH_INFO']
+    page['path_requested'] = os.environ['PATH_INFO']
+    
   else:
-    path = '/'
+    page['path_requested'] = '/'
   
-  # Get resolved path
-  resolved_path = resolvePath(path)
+  # Resolve requested path
+  page['path_resolved'] = resolvePath(page['path_requested'])
   
-  # Check if path exits or redirect to 404
-  if not resolved_path:
+  # Check if path exits and redirect to 404 if not
+  if not page['path_resolved']:
     # Send HTTP status
     print 'HTTP/1.1 404 Not Found'
     
     # Set path to 404 page
-    path = '/404'
-    resolved_path = resolvePath(path)  
+    page['path_resolved'] = resolvePath(settings['pages_special']['not_found'])
+    
+  else:
+    # Send HTTP status
+    print 'HTTP/1.1 200 OK'
   
   # Send HTTP header finished
   print ''
   
-  # Handle missing error pages
-  if not resolved_path:
+  # Handle missing pages
+  if not page['path_resolved']:
     print '404 - Not Found'
     sys.exit()
-    
-  # Get real path of page and read content
-  file = open(realPath(resolved_path))
-  content = file.read()
+  
+  # Get title of page
+  page['title'] = splitPath(page['path_resolved'])[:-1]
+  
+  # Get real path of page
+  page['path_real'] = realPath(page['path_resolved'])
+  
+  # Read content of page
+  file = codecs.open(page['path_real'],
+                     encoding='utf-8')
+  page['content_wiki'] = file.read()
   file.close()
   
+  # Create creole parser to parse file to HTML
+  creole_dialect = creoleparser.dialects.create_dialect(creoleparser.dialects.creole11_base,
+                                                        wiki_links_base_url = '/' + settings['base_name'] + '/',
+                                                        wiki_links_class_func = None,
+                                                        macro_func = None,
+                                                        indent_class = None)
+  
+  creole_parser = creoleparser.Parser(creole_dialect,
+                                      encoding = 'utf-8')
+  
   # Create HTML from file
-  html_content = creoleparser.creole2html(content)
+  page['content'] = unicode(creole_parser(page['content_wiki']), 
+                            encoding = 'utf-8')
   
   # Load template
-  template_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_path));
-  template = template_env.get_template(template_name)
+  jinja2_loader = jinja2.FileSystemLoader(settings['template_path'],
+                                          encoding = 'utf-8')
+  jinja2_env = jinja2.Environment(loader = jinja2_loader);
+  jinja2_template = jinja2_env.get_template(settings['template_name'])
   
   # Render template
-  output = template.render(content = html_content,
-                           path = path,
-                           resolved_path = resolved_path,
-                           site_title = site_title,
-                           base_name = base_name,
-                           path_parts = path.split('/')[1:],
-                           resolved_path_parts = resolved_path.split('/')[1:],
-                           getSubPages = getSubPages,
-                           splitPath = splitPath
-  )
+  jinja2_output = jinja2_template.render(pyco = pyco,
+                                         site = site,
+                                         page = page,
+                                         content = page['content'])
   
   # Print template output
-  print output.encode('ASCII')
+  print jinja2_output.encode('utf-8')
   
   

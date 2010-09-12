@@ -1,0 +1,113 @@
+body {
+	background: #eee;
+	font-family: Verdana, Arial, Helvetica; 
+}
+
+a {
+	color: #05a;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5 {
+	font-weight: normal;
+	border-bottom: 1px solid #bbb;
+}
+h1 {
+	font-size: 26px;
+}
+h2 {
+	font-size: 22px;
+}
+h3 {
+	font-size: 18px;
+}
+
+/* logo */
+#logo {
+	position: absolute;
+	top: 1px;
+	left: 1px;
+	width: 168px;
+	height: 150px;
+	text-align: center;
+}
+	
+/* menu */
+#menu {
+	position: absolute;
+	left: 1px;
+	top: 150px;
+	width: 152px;
+	padding: 10px;
+}
+
+#menu h3 {
+	padding: 5px 0px;
+	margin: 5px 0px;
+	font-size: 12px;
+	background: url(/images/hr.png) bottom left no-repeat;
+	border: 0px;
+	text-align: center;
+}
+
+#menu a:link, 
+#menu a:visited, 
+#menu a:active {
+	display: block;
+	height: 20px;
+	line-height: 20px;
+	margin: 2px 0px;
+	color: #000000;
+	width: auto;
+	text-indent: 5px;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+#menu a:hover,
+#menu li#selected a {
+	color: #13b;
+}
+
+#menu ul {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+#menu ul li > ul{
+	padding-left: 20px;
+}
+
+#menu p {
+	font-size: 12px;
+	margin: 2px 0px;
+
+}
+
+/* content */
+#main {
+	position: absolute;
+	top: 0px;
+	left: 172px;
+	right: 0px;
+
+}
+
+#content {
+	border-left: 1px solid #d8d8d8;
+	border-bottom: 1px solid #d8d8d8;
+	background: #fff;
+	padding: 10px;
+	font-size: 14px;
+}
+
+#footer {
+	padding-top: 5px;
+	text-align: center;
+	font-size: 10px;
+
+}
