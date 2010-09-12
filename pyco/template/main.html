@@ -1,37 +1,43 @@
 <html>
-  <head>
-    <title>{{ site_title }} :: {{ path[1:] }} </title>
-    <style type="text/css" media="screen">{% include "main.css" %}</style>
-  </head>
-  <body>
-    <H3>Breadcrumbs:</H3>
-      <i>using path_parts:</i>
-      {% for p in path_parts %}
-      =&gt;&nbsp;{{ p }}&nbsp; 
-      {% endfor %}
-      <br />
-      
-      <i>using resolved_path_parts:</i>
-      {% for p in resolved_path_parts %}
-      =&gt;&nbsp;{{ p }}&nbsp; 
-      {% endfor %}
-      <br />
+<head>
+	<title>{{ site.title }} :: {{ page.title }} </title>
+  <style type="text/css" media="screen">{% include "main.css" %}</style>
+</head>
+<body>
+	<div id="logo"><img src="/images/Jabber_wiki_logo.png" alt="Logo" /></div>
     
-    <H3>Menu:</H3>
-      <ul>
-      {% for p in getSubPages('/') recursive %}
-        <li>
-          <a href="/{{ base_name }}/{{ p }}">{{ splitPath(p)[-1] }}&nbsp;=&gt;&nbsp;{{ p }}</a>
-          {% if getSubPages(p) %}
-            <ul>
-              {{ loop(getSubPages(p)) }}
-            </ul>
-          {% endif %}
-      {% endfor %}
-      </ul>
-    
-    <H3>Content:</H3>
-      {{ path[1:] }}<br />
-      {{ content }}
-  </body>
+	<div id="menu">
+		<h3>Navigation</h3>
+		<ul>
+		{% for p in pyco.getSubPages('/') recursive %}
+			<li {% if p == page.path_resolved %} id="selected" {% endif %}>
+				<a href="/{{ site.base }}{{ p }}">{{ p }}</a>
+				{% if pyco.getSubPages(p) %}
+				<ul>
+					{{ loop(pyco.getSubPages(p)) }}
+				</ul>
+				{% endif %}
+			</li>
+		{% endfor %}
+		</ul>
+
+		<h3>Webchat</h3>
+		<script language="javascript" type="text/javascript" src="https://jabber1.hs-fulda.org:9091/webchat/jivelive.jsp"></script>
+		<script language="javascript" type="text/javascript">
+    			showChatButton('admin@workgroup.jabber.hs-fulda.org');
+		</script>
+
+	</div>
+	
+	<div id="main">
+		<div id="content">
+			{{ content }}
+
+		</div>
+		<div id="footer">
+			Kontakt - Impressum<br />
+		</div>
+	</div>
+	
+</body>
 </html>
