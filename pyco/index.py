@@ -49,9 +49,6 @@ settings['site_title'] = 'PyCo'
   
 # The base bath of the pages tree
 settings['pages_path'] = settings['base_path'] + '/pages'
-  
-# The name of the template
-settings['template_name'] = 'main.html'
 
 # Define special pages
 settings['pages_special'] = {}
@@ -59,10 +56,13 @@ settings['pages_special']['not_found'] = '/404'
 
 # Set of pages ignored in trees, listings, etc...
 settings['pages_ignored'] = []
-settings['pages_ignored'] += settings['pages_special']['not_found']
+settings['pages_ignored'].append(settings['pages_special']['not_found'])
 
 # The base path of the template
 settings['template_path'] = settings['base_path'] + '/template'
+  
+# The name of the template
+settings['template_name'] = 'main.html'
 
 
 #===============================================================================
@@ -85,12 +85,19 @@ def getSubPages(path):
     # Make real path from path
     real_path = realPath(os.path.normpath(path + '/' + l))
     
+    # Build full path
+    if path != '/':
+      full_path = os.path.normpath(path + '/' + l)
+      
+    else:
+      full_path = os.path.normpath('/' + l)
+    
     # Check if file is hidden
     if l.startswith('.'):
       continue
     
     # Check if file should be ignored
-    if l in settings['pages_ignored']:
+    if full_path in settings['pages_ignored']:
       continue
     
     # Check if file is directory, link or regular file
