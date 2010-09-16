@@ -11,7 +11,7 @@
 		<ul>
 		{% for p in pyco.getSubPages('/') recursive %}
 			<li {% if p == page.path_resolved %} id="selected" {% endif %}>
-				<a href="/{{ site.base }}{{ p }}">{{ p }}</a>
+				<a href="/{{ site.base }}{{ p }}">{{ splitPath(p)[-1] }}</a>
 				{% if pyco.getSubPages(p) %}
 				<ul>
 					{{ loop(pyco.getSubPages(p)) }}

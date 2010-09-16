@@ -202,16 +202,9 @@ if __name__ == '__main__':
   
   # Check if path exits and redirect to 404 if not
   if not page['path_resolved']:
-    # Send HTTP status
-    print 'HTTP/1.1 404 Not Found'
-    
     # Set path to 404 page
     page['path_resolved'] = resolvePath(settings['pages_special']['not_found'])
     
-  else:
-    # Send HTTP status
-    print 'HTTP/1.1 200 OK'
-  
   # Send HTTP header finished
   print ''
   
