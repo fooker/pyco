@@ -39,13 +39,13 @@ cgitb.enable()
 settings = {}
 
 # The base path of the pyco installation 
-settings['base_path'] = '/home/dustin/tmp/pyco/pyco'
+settings['base_path'] = '/var/www'
 
 # The name of the script
 settings['base_name'] = 'index.py'
 
 # The title of the web site
-settings['site_title'] = 'PyCo'
+settings['site_title'] = 'Jabber @ HS-Fulda'
   
 # The base bath of the pages tree
 settings['pages_path'] = settings['base_path'] + '/pages'
@@ -57,6 +57,8 @@ settings['pages_special']['not_found'] = '/404'
 # Set of pages ignored in trees, listings, etc...
 settings['pages_ignored'] = []
 settings['pages_ignored'].append(settings['pages_special']['not_found'])
+settings['pages_ignored'].append('/Impressum')
+settings['pages_ignored'].append('/Kontakt')
 
 # The base path of the template
 settings['template_path'] = settings['base_path'] + '/template'
