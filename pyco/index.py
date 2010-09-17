@@ -148,7 +148,7 @@ def subPath(path, level):
 # spaces and removes the order number.
 #===============================================================================
 def getName(path):
-  page_path = splitPath(path)[-1].replace('_', ' ');
+  page_path = splitPath(path)[-1];
   return page_path
 
 
