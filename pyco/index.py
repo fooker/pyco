@@ -125,6 +125,17 @@ def splitPath(path):
 
 
 #===============================================================================
+# Returns the name of the page of the path
+#
+# It fetches the last part of splitPath(path), replaces the underscores with
+# spaces and removes the order number.
+#===============================================================================
+def getName(path):
+  page_path = splitPath(path)[-1].replace('_', ' ');
+  return page_path
+
+
+#===============================================================================
 # Returns the real path for the given path 
 #===============================================================================
 def realPath(path):
@@ -185,6 +196,7 @@ if __name__ == '__main__':
   # Build function context
   pyco = {}
   pyco['splitPath'] = splitPath
+  pyco['getName'] = getName
   pyco['getSubPages'] = getSubPages
   
   # Build page context
