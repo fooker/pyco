@@ -39,7 +39,7 @@ cgitb.enable()
 settings = {}
 
 # The base path of the pyco installation 
-settings['base_path'] = '/home/dustin/workspaces/private/pyco/pyco'
+settings['base_path'] = '/home/dustin/tmp/pyco/pyco'
 
 # The name of the script
 settings['base_name'] = 'index.py'
@@ -74,7 +74,7 @@ def getSubPages(path):
   
   # Check if file is directory
   if not os.path.isdir(real_path):
-    return None
+    return []
   
   # Get list of file system entries in path
   list = os.listdir(real_path)
@@ -125,6 +125,23 @@ def splitPath(path):
 
 
 #===============================================================================
+# Joins the parts to a path
+#===============================================================================
+def joinPath(parts):
+  return '/' + ('/'.join(parts))
+
+
+#===============================================================================
+# Returns a sub path
+#
+# The returned path is the parent path of the given path starting
+# at root and ending at the given level
+#===============================================================================
+def subPath(path, level):
+	return joinPath(splitPath(path)[0:level])
+
+
+#===============================================================================
 # Returns the name of the page of the path
 #
 # It fetches the last part of splitPath(path), replaces the underscores with
@@ -170,7 +187,7 @@ def resolvePath(path):
   
   # Check if file is directory
   if os.path.isdir(real_path):
-    return resolvePath(os.path.normpath(path + '/.content'))
+    return resolvePath(os.path.normpath(path + '/.page'))
   
   # Check if file is normal file
   if os.path.isfile(real_path):
@@ -196,6 +213,8 @@ if __name__ == '__main__':
   # Build function context
   pyco = {}
   pyco['splitPath'] = splitPath
+  pyco['joinPath'] = joinPath
+  pyco['subPath'] = subPath
   pyco['getName'] = getName
   pyco['getSubPages'] = getSubPages
   
