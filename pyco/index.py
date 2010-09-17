@@ -221,7 +221,7 @@ if __name__ == '__main__':
     sys.exit()
   
   # Get title of page
-  page['title'] = splitPath(page['path_resolved'])[:-1]
+  page['title'] = splitPath(page['path_resolved'])[-1]
   
   # Get real path of page
   page['path_real'] = realPath(page['path_resolved'])
