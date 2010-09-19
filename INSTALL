@@ -7,10 +7,15 @@ interpreter.
 The following python modules are also required:
   - creoleparser
   - jinja2
+	- xattr
 
 To install the python modules on debian based linux systems you could run the
 following command:
-  apt-get install python-creoleparser python-jinja2
+  apt-get install python-creoleparser python-jinja2 python-xattr
+
+Extended file attributes must be enabled, because of the ordering informations
+stored as xattr entry. I know, it currently collides with SELinux. If you have
+any better idea where to store the ordering information, please tell me...
 
 
 Web server requirements
