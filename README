@@ -14,7 +14,9 @@ page on the final web page. A regular file defines the page using the file name
 as page title and the file content as page content. A directory must contain a
 file or link with the name '.content' which specifies the page created for the
 folder. A link could link to another file, link or folder to make the page(s)
-available on the position of the link.
+available on the position of the link. The order of the pages is defined by an
+extended file attribute configurabel in the PyCo settings. The order attribute
+is optional and stored for each file  used to sort the pages in a directory.
 
 The page content is written using creole syntax. the creole syntax is the
 commonly known as wiki-syntax. This allows to write and edit page content using
