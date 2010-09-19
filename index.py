@@ -18,6 +18,7 @@
 
 import os
 import sys
+import xattr
 
 import codecs
 
@@ -57,6 +58,10 @@ settings['pages_special']['not_found'] = '/404'
 # Set of pages ignored in trees, listings, etc...
 settings['pages_ignored'] = []
 settings['pages_ignored'].append(settings['pages_special']['not_found'])
+
+# The name of the order filed of extended file attributes
+# In most cases the name should be prefixed by 'user.'
+settings['pages_order_xattr'] = 'user.pyco.order'
 
 # The base path of the template
 settings['template_path'] = settings['base_path'] + '/template'
@@ -106,15 +111,22 @@ def getSubPages(path):
             os.path.isfile(real_path)):
       continue
     
-    # Add to list of valid child
-    if path != '/':
-      childs.append(os.path.normpath(path + '/' + l))
-      
+    # Get order from extended file attributes or set int to maximum of integer
+    # if no such attribute exits
+    xattrs = xattr.xattr(real_path)
+    if settings['pages_order_xattr'] in xattrs:
+      order = int(xattrs[settings['pages_order_xattr']])
     else:
-      childs.append(os.path.normpath('/' + l))
-      
+      order = sys.maxint
+
+    # Add path and order to list of valid child
+    childs.append((full_path, order))
+  
+  # Sort childs by order
+  childs.sort(key = lambda child: child[1])
+  
   # Return list of sub pages
-  return childs
+  return [child[0] for child in childs]
 
 
 #===============================================================================
