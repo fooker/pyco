@@ -40,13 +40,13 @@ cgitb.enable()
 settings = {}
 
 # The base path of the pyco installation 
-settings['base_path'] = '/home/dustin/tmp/pyco/pyco'
+settings['base_path'] = '/mnt/srv/lighttpd/test'
 
 # The name of the script
 settings['base_name'] = 'index.py'
 
 # The title of the web site
-settings['site_title'] = 'PyCo'
+settings['site_title'] = 'dustin-frisch.de'
   
 # The base bath of the pages tree
 settings['pages_path'] = settings['base_path'] + '/pages'
