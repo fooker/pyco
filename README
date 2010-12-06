@@ -18,12 +18,15 @@ available on the position of the link. The order of the pages is defined by an
 extended file attribute configurabel in the PyCo settings. The order attribute
 is optional and stored for each file  used to sort the pages in a directory.
 
-The page content is written using creole syntax. the creole syntax is the
-commonly known as wiki-syntax. This allows to write and edit page content using
-every text editor in an easy to learn syntax. For further information about
-creole see <http://www.wikicreole.org/>.
+The page content is written in HTML. The content will be inserted into the
+template without modification. To pass the content to a specific module the
+content can be preceded with a shi-bang style declaration. The shi-bang
+declaration looks like the following: '#! MODULE'. The declaration must existst
+in the first line without any preceeding spaces. The 'MODULE' must be replaced
+with the name of the mudule to pass the raw content throught. The description
+of the renderers are located in the renderers code: /renderers/MODULE.
 
-The template creates from the current context and the parsed creole content a
+The template creates from the current context and the rendered content a
 web page. The template will be loaded and populated with HTML created from the
 page content and serveral other values from the current context. The rendered
 template provides the final web page. The template system used is jinja2
