@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+ 	<head>
+		<title>{{ site.title }} :: {{ page.path }}</title>
+		<style type="text/css" media="screen">{% include "style.css" %}</style>
+	</head>
+	<body>
+		<div id="wrap1">
+			<div id="wrap2">
+				<div id="page">
+					<div id="header">
+						<img class="left" src="/images/header_l.png" alt="" />
+						<img class="center" src="/images/header.png" alt="" />
+						<img class="right" src="/images/header_r.png" alt="" />
+						<p id="title">NIGHT OF PROJECTS</p>
+					</div>
+					<div id="menu1">
+						<ul class="topmenu menu1">
+							{% for p in pyco.getSubPages(pyco.subPath(page.path_resolved, 0)) %}
+								<li {% if p == pyco.subPath(page.path_resolved, 1) %} class="current"{% endif %}>
+									<a href="/{{site.base }}{{ p }}">{{ pyco.getName(p) }}</a>
+								</li>
+							{% endfor %}
+						</ul>
+						<div id="subtitle">
+							Creating .. Coding .. Connecting
+						</div>
+					</div>
+					<div id="center">
+						<div id="menu2">
+							{% if pyco.getSubPages(pyco.subPath(page.path_resolved, 1)) %}
+								<ul class="sidemenu menu2">
+									{% for p in pyco.getSubPages(pyco.subPath(page.path_resolved, 1)) recursive %}
+										<li {% if p == pyco.subPath(page.path_resolved, 2) %} class="current"{% endif %}>
+											<a href="/{{site.base }}{{ p }}">{{ pyco.getName(p) }}</a>
+											{% if pyco.getSubPages(p) %}
+												<ul class="sidemenu menu2">
+													{{ loop(pyco.getSubPages(p)) }}
+												</ul>
+											{% endif %}
+										</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</div>
+						<div id="content">
+							<h1>{{ page.path }}</h1>
+							{{ page.content }}
+						</div>
+					</div>
+					<div id="footer">
+						<span class="left">
+							<a href="http://test.dustin-frisch.de/index.py/Projects/PyCo">Provided by PyCo CMS</a>
+						</span>
+						<span class="right">
+							<a href="/{{ site.base }}/Impressum">Impressum</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="background">
+			<img src="/images/bg.png" alt="" />
+		</div>
+	</body>
+</html>
