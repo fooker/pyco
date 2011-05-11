@@ -21,6 +21,7 @@ import sys
 import xattr
 
 import codecs
+import re
 
 import cgi
 import cgitb
@@ -40,7 +41,7 @@ cgitb.enable()
 settings = {}
 
 # The base path of the pyco installation 
-settings['base_path'] = '/home/dustin/tmp/pyco/pyco'
+settings['base_path'] = '/var/www/'
 
 # The name of the script
 settings['base_name'] = 'index.py'
@@ -58,6 +59,7 @@ settings['pages_special']['not_found'] = '/404'
 # Set of pages ignored in trees, listings, etc...
 settings['pages_ignored'] = []
 settings['pages_ignored'].append(settings['pages_special']['not_found'])
+settings['pages_ignored'].append('/Impressum')
 
 # The name of the order filed of extended file attributes
 # In most cases the name should be prefixed by 'user.'
@@ -68,6 +70,17 @@ settings['template_path'] = settings['base_path'] + '/template'
   
 # The name of the template
 settings['template_name'] = 'main.html'
+
+# The base path of the rendere plugins
+settings['renderers_path'] = settings['base_path'] + '/renderers'
+
+
+#===============================================================================
+# Plugin to display raw content
+#===============================================================================
+def renderNone(content):
+  # Enclose the content with '<pre>' tags
+  return '<pre>' + content + '</pre>'
 
 
 #===============================================================================
@@ -117,6 +130,7 @@ def getSubPages(path):
     if settings['pages_order_xattr'] in xattrs:
       order = int(xattrs[settings['pages_order_xattr']])
     else:
+      file_name = splitPath(real_path)[-1]
       order = sys.maxint
 
     # Add path and order to list of valid child
@@ -172,6 +186,17 @@ def realPath(path):
 
 
 #===============================================================================
+# Returns the pretty path for the given path
+#===============================================================================
+def prettyPath(path):
+  parts = splitPath(path)
+  if parts[-1] == '.page':
+    return joinPath(parts[:-1])
+  else:
+    return joinPath(parts)
+
+
+#===============================================================================
 # Resolve the given path
 #===============================================================================
 def resolvePath(path):
@@ -207,7 +232,19 @@ def resolvePath(path):
   
   # File is something else
   return None
-    
+
+
+#===============================================================================
+# Parses the shi bang
+#===============================================================================
+def parseShiBang(shi_bang):
+  result = re.match('^#! *([\w]*) *$', shi_bang)
+  
+  if result != None:
+    return result.group(1)
+  else:
+    return None
+
 
 #===============================================================================
 # Main function
@@ -217,6 +254,16 @@ if __name__ == '__main__':
   # Send HTTP content type
   print 'Content-Type: text/html;charset=utf-8'  
   
+  # Build renderers map and add the 'none' renderer
+  renderers = {}
+  renderers[None] = renderNone
+  
+  # Load other renderers from plugin folder
+  sys.path.insert(0, settings['renderers_path'])
+  for renderer_file in os.listdir(settings['renderers_path']):
+    if renderer_file.endswith('.py'):
+      renderer_module = execfile(os.path.join(settings['renderers_path'], renderer_file))
+   
   # Build site context
   site = {}
   site['title'] = settings['site_title']
@@ -261,26 +308,33 @@ if __name__ == '__main__':
   
   # Get real path of page
   page['path_real'] = realPath(page['path_resolved'])
-  
-  # Read content of page
+ 
+  # Get the pretty path
+  page['path'] = prettyPath(page['path_resolved']);
+ 
+  # Read shi bang and raw content of page
   file = codecs.open(page['path_real'],
                      encoding='utf-8')
-  page['content_wiki'] = file.read()
+  page['content_all'] = file.readlines()
   file.close()
   
-  # Create creole parser to parse file to HTML
-  creole_dialect = creoleparser.dialects.create_dialect(creoleparser.dialects.creole11_base,
-                                                        wiki_links_base_url = '/' + settings['base_name'] + '/',
-                                                        wiki_links_class_func = None,
-                                                        macro_func = None,
-                                                        indent_class = None)
+  # Extract and parse shi bang
+  page['shi_bang'] = parseShiBang(page['content_all'][0])
   
-  creole_parser = creoleparser.Parser(creole_dialect,
-                                      encoding = 'utf-8')
+  # Get content without shi bang if shi bang is valid or the full content otherwise
+  if page['shi_bang'] != None and page['shi_bang'] in renderers:
+    page['content_raw'] = ''.join(page['content_all'][1:])
+  else:
+    page['content_raw'] = ''.join(page['content_all'])
+   
+  # Find renderer for shi bang
+  if page['shi_bang'] in renderers:
+    page['renderer'] = renderers[page['shi_bang']]
+  else:
+    page['renderer'] = renderers[None]
   
-  # Create HTML from file
-  page['content'] = unicode(creole_parser(page['content_wiki']), 
-                            encoding = 'utf-8')
+  # Render content using found renderer
+  page['content'] = page['renderer'](page['content_raw'])
   
   # Load template
   jinja2_loader = jinja2.FileSystemLoader(settings['template_path'],
