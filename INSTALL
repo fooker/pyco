@@ -5,7 +5,7 @@ To run PyCo you need a running web server as Apache or LightTPD and a python
 interpreter.
 
 The following python modules are also required:
-  - creoleparser
+  - creoleparser (>= 0.6)
   - jinja2
 	- xattr
 
