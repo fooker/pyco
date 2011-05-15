@@ -56,14 +56,20 @@ settings['pages_path'] = settings['base_path'] + '/pages'
 settings['pages_special'] = {}
 settings['pages_special']['not_found'] = '/404'
 
-# Set of pages ignored in trees, listings, etc...
-settings['pages_ignored'] = []
-settings['pages_ignored'].append(settings['pages_special']['not_found'])
-settings['pages_ignored'].append('/Impressum')
-
 # The name of the order filed of extended file attributes
 # In most cases the name should be prefixed by 'user.'
 settings['pages_order_xattr'] = 'user.pyco.order'
+
+# The name of the file defining the order. If no order field should be used, it
+# can be left None. If the file exists in a sub-directory, it will disable
+# xattr ordering.
+settings['pages_order_file'] = None
+
+# Set of pages ignored in trees, listings, etc...
+settings['pages_ignored'] = []
+settings['pages_ignored'].append(settings['pages_special']['not_found'])
+settings['pages_ignored'].append(settings['pages_order_file'])
+settings['pages_ignored'].append('/Impressum')
 
 # The base path of the template
 settings['template_path'] = settings['base_path'] + '/template'
@@ -97,6 +103,12 @@ def getSubPages(path):
   # Get list of file system entries in path
   list = os.listdir(real_path)
   
+  # Check if order file exists and read it into order list
+  order_list = []
+  if settings['pages_order_file'] and os.path.exists(real_path + '/' + settings['pages_order_file']):
+    for l in open(real_path + '/' + settings['pages_order_file']):
+      order_list.append(l[:-1])
+
   # Build list of sub pages
   childs = []
   for l in list:
@@ -123,15 +135,20 @@ def getSubPages(path):
             os.path.islink(real_path) or 
             os.path.isfile(real_path)):
       continue
-    
-    # Get order from extended file attributes or set int to maximum of integer
-    # if no such attribute exits
-    xattrs = xattr.xattr(real_path)
-    if settings['pages_order_xattr'] in xattrs:
-      order = int(xattrs[settings['pages_order_xattr']])
+   
+    # Calculate item ordering
+    if order_list.count(l):
+      # Use ordering from order file
+      order = order_list.index(l)
+      
     else:
-      file_name = splitPath(real_path)[-1]
-      order = sys.maxint
+      # Get order from extended file attributes or set int to maximum of integer
+      # if no such attribute exits
+      xattrs = xattr.xattr(real_path)
+      if settings['pages_order_xattr'] in xattrs:
+        order = int(xattrs[settings['pages_order_xattr']])
+      else:
+        order = sys.maxint
 
     # Add path and order to list of valid child
     childs.append((full_path, order))
