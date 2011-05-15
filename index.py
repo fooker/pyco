@@ -37,48 +37,9 @@ import jinja2
 # Enable CGI debug output
 cgitb.enable()
 
-# The settings container
+# Build and load the settings container
 settings = {}
-
-# The base path of the pyco installation 
-settings['base_path'] = '/var/www/'
-
-# The name of the script
-settings['base_name'] = 'index.py'
-
-# The title of the web site
-settings['site_title'] = 'PyCo'
-  
-# The base bath of the pages tree
-settings['pages_path'] = settings['base_path'] + '/pages'
-
-# Define special pages
-settings['pages_special'] = {}
-settings['pages_special']['not_found'] = '/404'
-
-# The name of the order filed of extended file attributes
-# In most cases the name should be prefixed by 'user.'
-settings['pages_order_xattr'] = 'user.pyco.order'
-
-# The name of the file defining the order. If no order field should be used, it
-# can be left None. If the file exists in a sub-directory, it will disable
-# xattr ordering.
-settings['pages_order_file'] = None
-
-# Set of pages ignored in trees, listings, etc...
-settings['pages_ignored'] = []
-settings['pages_ignored'].append(settings['pages_special']['not_found'])
-settings['pages_ignored'].append(settings['pages_order_file'])
-settings['pages_ignored'].append('/Impressum')
-
-# The base path of the template
-settings['template_path'] = settings['base_path'] + '/template'
-  
-# The name of the template
-settings['template_name'] = 'main.html'
-
-# The base path of the rendere plugins
-settings['renderers_path'] = settings['base_path'] + '/renderers'
+execfile('config.py');
 
 
 #===============================================================================
