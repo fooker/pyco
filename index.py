@@ -40,13 +40,13 @@ cgitb.enable()
 settings = {}
 
 # The base path of the pyco installation 
-settings['base_path'] = '/mnt/srv/lighttpd/test'
+settings['base_path'] = '/var/www/lab.sh'
 
 # The name of the script
 settings['base_name'] = 'index.py'
 
 # The title of the web site
-settings['site_title'] = 'dustin-frisch.de'
+settings['site_title'] = 'lab.sh'
   
 # The base bath of the pages tree
 settings['pages_path'] = settings['base_path'] + '/pages'
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     
   else:
     page['path_requested'] = '/'
-  
+
   # Resolve requested path
   page['path_resolved'] = resolvePath(page['path_requested'])
   

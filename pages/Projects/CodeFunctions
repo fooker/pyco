@@ -1,0 +1,117 @@
+CodeFunction is an extension [[http://www.mediawiki.org | MediaWiki]]. It
+provieds a parser hock, which allows the usage of <snippet>...</snippet> in a
+wiki article. The code between the tags will be displayed in a pretty format,
+including hiliting, line numbering configurabe prompt and configurable header.
+
+For syntax hilighting [[http://qbnz.com/highlighter/index.php | GeSHi]] is used.
+A copy of GeSHi is included in the source code.
+
+== Download ==
+The latest version of CodeFunction can be fetched from the git repository:
+{{{
+git clone git://git.lab.sh/code-functions.git $IP/extensions/CodeFunctions
+}}}
+
+== Installation ==
+To install the extension, the following line must be included into
+//LocalSetting.php// of your MediaWiki installation:
+
+{{{
+# Enable Extension:CodeFunctions
+require_once ("$IP/extensions/CodeFunctions/CodeFunctions.php");
+}}}
+
+== Usage ==
+The //snippet// tag can be included into every wiki article like an normal HTML
+tag. The following example will show the usage of the tag to include some lines
+of SQL into a MediaWiki:
+
+{{{
+<snippet
+  prefix1="wiki=#"
+  prefix2="wiki-#"
+  target1="psql"
+  target2="master.lab.sh
+	language="SQL"">
+SELECT * 
+  FROM wiki.mwuser
+  WHERE user_name = 'Fooker';
+SELECT * 
+  FROM wiki.mwuser
+  WHERE user_name = 'Root';
+</snippet>
+}}}
+
+
+The code surrounded by the tag supports line continuation. The code must start
+on the first character of the line to mark it as a new line. If the code is
+indentet using two spaces, the line will continue the line above.
+
+The only diffrerence between a starting line and a continuing line is the prefix
+used for the line. The starting line will use //prefix1// and the other lines
+will use //prefix2//. If there should be no difference between the two prefix
+version the parameter //prefix// can be used.
+
+The parameters //target1// and //targt2// can be used to form a header above
+the code. The two values for the parameters are concatinated using the //at//
+sign. If one of the two parameters are omitted, the seperated is omitted, too.
+If there was no values given for ether //target// nor //target2//, the whole
+header block is omitted.
+
+If the parameter //language// has a value, GeSHi will be used to hilighte the
+syntax of the given code. The language is directly passed to GeSHI without any
+modification. For a list of available languages see
+[[http://qbnz.com/highlighter/examples.php]].
+
+=== Parameters ===
+The following parameters are supported by the //snippet// tag:
+|= Name  |= Default |= Description
+|prefix  |          |The prefix used for each line
+|prefix1 |prefix    |The prefix used for starting lines
+|prefix2 |prefix    |The prefix used for continuing lines
+|target1 |          |The first part of the header
+|target2 |          |The second part of the header
+|language|          |The language used to hilight the code
+
+=== Templates ===
+To avoid the repetition of complex snippet definitions and unification of
+multiple usage of the same code type, templates are recommendet. An example for
+such a template can be:
+
+{{{
+<snippet
+  prefix1="{{{database}}}=#"
+  prefix2="{{{database}}}-#"
+  target1="psql {{{database}}}"
+  target2="{{{target}}}"
+  language="SQL">
+{{{code|{{{1}}}}}}
+</snippet>
+}}}
+
+The usage of such an template, called //Template:Code/PSQL// will be very easy:
+
+{{{
+{{Code/PSQL
+|database=wiki
+|target=master
+|code=
+SELECT * 
+  FROM wiki.mwuser
+  WHERE user_name = 'Fooker';
+SELECT * 
+  FROM wiki.mwuser
+  WHERE user_name = 'Root';
+}}
+}}}
+
+The usage of the template parameter //code// can be omitted, if the code
+contains no //=//. If the code contains a pipe symbol, the pipes must be
+replaced with
+[[http://meta.wikimedia.org/wiki/Help:Template#A_parameter_value_containing_a_pipe_character | the pipe template]]
+or
+[[http://www.mediawiki.org/wiki/Extension:Pipe_Escape | the extension //Pipe Escape//]].
+
+== Licence ==
+CodeFunctions is open source and licenced under the GPL 3. You can read and
+download the licence under [[http://gplv3.fsf.org/]].

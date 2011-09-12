@@ -8,6 +8,8 @@ It combinates a filesystem sub-tree, a markup language and a template engine to 
 
 This allows to build a home page very fast. You can build the page template and can start to create articles by creating files.
 
+I have held an talk about PyCo on the [[http://nop.hs-fulda.org | Night of Projects]] (German). Recordings of the talk are available [[http://nop.hs-fulda.org/index.py/Fahrplan | here]].
+
 
 == Why use Pyco ==
 Pyco is a page management system which allows to create a static home page in a fast and easy way without a web driven admin interface and other junk.
@@ -16,22 +18,22 @@ Pyco is a page management system which allows to create a static home page in a 
 == Technical overview ==
 Pyco is a fast CGI module written in python. It conists of three parts:
 
-**[[Projects/Pyco/Docs/Filesystem Tree|Filesystem Tree]]:**
+**Filesystem Tree:**
 The filesystem tree represents the article layout of the page. The file system tree is directly transformed into the page tree.
 
-**[[Projects/Pyco/Docs/Markup Language|Markup Language]]:**
-To design the content pages Pyco uses a markup language. In detail it uses the [[http://code.google.com/p/python-creole/|python-creole]] module to parse the the [[http://wikicreole.org/wiki/Creole1.0|Creole Wiki]] syntax.
+**Markup ersers:**
+To design the content pages Pyco uses a markup parsers. The parsers are snippets of python code rendering the content file to some sort of HTML output. There is a growing list of
+In detail it uses the [[http://code.google.com/p/python-creole/|python-creole]] module to parse the the [[http://wikicreole.org/wiki/Creole1.0|Creole Wiki]] syntax.
 
-**[[Projects/Pyco/Docs/Template Engine|Template Engine]]:**
+**Template Engine:**
 To create the fully blown home page from the content Pyco uses the [[http://jinja.pocoo.org/2/|Jnja]] template engine to create the html code.
 
 
 == Download ==
-//Pyco is just a script hacked in a short time. It is **currently early alpha**.//
+//Pyco is just a script hacked in a short time. It is **currently in a beta state**. It will work in most cases - but future versions maybe breaks the API.//
 
-Currently there is no download archive available. But I will provide git access soon.
-
-If you want to test PyCo, feel free to write a [[ mailto:dustin.frisch@gmail.com | mail ]].
+Currently there is no download archive available. But the latest version can be received by git:
+[[https://github.com/fooker/pyco]]
 
 
 == Licence ==

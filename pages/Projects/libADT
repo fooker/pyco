@@ -1,0 +1,53 @@
+In most computer programms some simple structures are required to collect element, map elements to others, sort a collection of elements or search in a collection of elements. These structures are called ADTs - Abstract Data Types. Most programming languages provide implementations for the most commen ADTs - but a C-programmer have to write its own library ore must implement the required structure every time he writes a programm.
+
+The most general ADTs are the following ones:
+* Lists
+* Sets
+* Maps
+* ...
+
+There are serveral implementations for each ADT, which hast performance pros and cons depending on the useage by the programmer.
+
+The target of libADT is to provide a general interface for the most common ADTs and implement these ADTs using C.
+
+
+== Why use libADT ==
+libADT provides a proofen, tested and heavily used implementation for common used structures. This avoids implementation mistakes if the structure must be re-implemented and saves time. The interface of libADT provides an easy way to exchange the implementation used for a specific instance without huge code changes.
+
+
+== Conecpts ==
+libADT uses an interface and implementation conecpt to seperate the ADT from its implementation. This allows to programmer using the library to write code against an interface and the implementation will be specified by a single function call. This function call can be changed later to change the used implementation. This conect makes the useage of the library very easy. The interface is as clean as possible and the programmer has not to struggle with the details of the implementations.
+
+
+== Implemented ADTs ==
+The following ADTs are currently implemented ore will be implemented in near time:
+* list
+** array list
+** doubl linked list
+* queue
+** linked queue
+** ring buffer queue
+* stack
+** linked stack
+** array stack
+* map
+** hash map
+* set
+** hash set
+
+
+== Tests ==
+For each ADT a test collection exists. All implementations must pass all tests in the test collection. This will provide a robust framework for other applications.
+
+The tests are written using [[Projects/CUTS | CUTS]] and are shipped with the library.
+
+
+== Download ==
+//The library is currently under heavy development.//
+
+The library can be received using git:
+[[http://gitweb.lab.sh/?p=adt.git;a=summary]]
+
+
+== Licence ==
+libADT is open source and licenced under the GPL 3. You can read and download the licence under [[http://gplv3.fsf.org/]].

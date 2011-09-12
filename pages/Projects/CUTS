@@ -1,0 +1,21 @@
+For developing libraries, unit tests are a good thing - even if the library is very small. The tests will provide an easy way to test if changes does not break other things and if the software would work even with special cases. The tests will grow during the time and will help to keep library projects in a fine state.
+
+CUTS is a simple testing framework for libraries written in C. It allows to call library functions in simple methods and compare the result of the functions with expected values.
+
+== Technical overview ==
+CUTS consists of three very simple parts. The first part is a [[http://www.gnu.org/software/make/ | Makefile]] which compiles the tests and runs them using CUTS. The second part is a C-header file which contains macros used for testing and the third part is a small programm which drives the tests by calling the test functions defined by the user and reporting errors.
+
+The makefile has serveral jobs to do. At first it will scan the c files containing the test for the name of the test methods. These method names will be used to call the test method later. The second step is to compile the tests using the C compiler and link them to a library. The last step is to call the CUTS binary and let the binary execute the test functions on the compiled library.
+
+The header files provieded by CUTS contain serveral macros used to define test functions and tests in these functions. The function definitions will be found by the makefile and are called by the CUTS library. These test functions can contain serveral tests which compare a return value or a variable with an expected value. Serveral helper macros for testing are available.
+
+The CUTS binary is used to drive the tests by calling the scanned test method names in the test library compiled by the makefile. The binary is a small C programm using [[http://linux.die.net/man/3/dlopen | dlopen]] to load the test library and execute the tests. Failures of tests will be reported by the binary.
+
+
+== Download ==
+Currently there is no download archive available. But the latest version can be received by git:
+[[http://gitweb.lab.sh/?p=cuts.git;a=summary]]
+
+
+== Documentation ==
+A detaild documentation will be available soon. [[Projects/libADT]] uses CUTS - these tests can be used as an first example.
