@@ -1,3 +1,4 @@
+#! creole
 In most computer programms some simple structures are required to collect element, map elements to others, sort a collection of elements or search in a collection of elements. These structures are called ADTs - Abstract Data Types. Most programming languages provide implementations for the most commen ADTs - but a C-programmer have to write its own library ore must implement the required structure every time he writes a programm.
 
 The most general ADTs are the following ones:

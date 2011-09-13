@@ -1,3 +1,4 @@
+#! creole
 CodeFunction is an extension [[http://www.mediawiki.org | MediaWiki]]. It
 provieds a parser hock, which allows the usage of <snippet>...</snippet> in a
 wiki article. The code between the tags will be displayed in a pretty format,

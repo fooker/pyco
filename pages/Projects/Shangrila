@@ -1,3 +1,4 @@
+#! creole
 Shangrila is emulator / virtual machine of an non-existing computer. The computer-system implemented in Shangrila is an virtual system designed by myself.
 
 The idea behind shangrila is to develope a computer system at my own. I have found the idea to build a processor witch would work with ony one instruction, called [[http://en.wikipedia.org/wiki/One_instruction_set_computer | OISC]]. I have implemented an emulator for such an CPU during a night session at the Chaos Communication Congress 2009. To use the CPU, I have to build some architecture around the CPU. Instead of using an existing computer architecture, I have thought about building my own. During the last few years I have worked sporadical on an implementation of the architecture and an clean implementation of the CPU working with the architecture.

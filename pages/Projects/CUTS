@@ -1,3 +1,4 @@
+#! creole
 For developing libraries, unit tests are a good thing - even if the library is very small. The tests will provide an easy way to test if changes does not break other things and if the software would work even with special cases. The tests will grow during the time and will help to keep library projects in a fine state.
 
 CUTS is a simple testing framework for libraries written in C. It allows to call library functions in simple methods and compare the result of the functions with expected values.

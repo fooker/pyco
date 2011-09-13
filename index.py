@@ -21,6 +21,7 @@ import sys
 import xattr
 
 import codecs
+import re
 
 import cgi
 import cgitb
@@ -36,38 +37,16 @@ import jinja2
 # Enable CGI debug output
 cgitb.enable()
 
-# The settings container
+# Build and load the settings container
 settings = {}
+execfile('config.py');
 
-# The base path of the pyco installation 
-settings['base_path'] = '/var/www/lab.sh'
-
-# The name of the script
-settings['base_name'] = 'index.py'
-
-# The title of the web site
-settings['site_title'] = 'lab.sh'
-  
-# The base bath of the pages tree
-settings['pages_path'] = settings['base_path'] + '/pages'
-
-# Define special pages
-settings['pages_special'] = {}
-settings['pages_special']['not_found'] = '/404'
-
-# Set of pages ignored in trees, listings, etc...
-settings['pages_ignored'] = []
-settings['pages_ignored'].append(settings['pages_special']['not_found'])
-
-# The name of the order filed of extended file attributes
-# In most cases the name should be prefixed by 'user.'
-settings['pages_order_xattr'] = 'user.pyco.order'
-
-# The base path of the template
-settings['template_path'] = settings['base_path'] + '/template'
-  
-# The name of the template
-settings['template_name'] = 'main.html'
+#===============================================================================
+# Render plugin to display preformated content
+#===============================================================================
+def renderPre(content):
+  # Enclose the content with '<pre>' tags
+  return '<pre>' + content + '</pre>'
 
 
 #===============================================================================
@@ -84,6 +63,12 @@ def getSubPages(path):
   # Get list of file system entries in path
   list = os.listdir(real_path)
   
+  # Check if order file exists and read it into order list
+  order_list = []
+  if settings['pages_order_file'] and os.path.exists(real_path + '/' + settings['pages_order_file']):
+    for l in open(real_path + '/' + settings['pages_order_file']):
+      order_list.append(l[:-1])
+
   # Build list of sub pages
   childs = []
   for l in list:
@@ -110,14 +95,20 @@ def getSubPages(path):
             os.path.islink(real_path) or 
             os.path.isfile(real_path)):
       continue
-    
-    # Get order from extended file attributes or set int to maximum of integer
-    # if no such attribute exits
-    xattrs = xattr.xattr(real_path)
-    if settings['pages_order_xattr'] in xattrs:
-      order = int(xattrs[settings['pages_order_xattr']])
+   
+    # Calculate item ordering
+    if order_list.count(l):
+      # Use ordering from order file
+      order = order_list.index(l)
+      
     else:
-      order = sys.maxint
+      # Get order from extended file attributes or set int to maximum of integer
+      # if no such attribute exits
+      xattrs = xattr.xattr(real_path)
+      if settings['pages_order_xattr'] in xattrs:
+        order = int(xattrs[settings['pages_order_xattr']])
+      else:
+        order = sys.maxint
 
     # Add path and order to list of valid child
     childs.append((full_path, order))
@@ -172,6 +163,17 @@ def realPath(path):
 
 
 #===============================================================================
+# Returns the pretty path for the given path
+#===============================================================================
+def prettyPath(path):
+  parts = splitPath(path)
+  if parts[-1] == '.page':
+    return joinPath(parts[:-1])
+  else:
+    return joinPath(parts)
+
+
+#===============================================================================
 # Resolve the given path
 #===============================================================================
 def resolvePath(path):
@@ -207,7 +209,19 @@ def resolvePath(path):
   
   # File is something else
   return None
-    
+
+
+#===============================================================================
+# Parses the she bang
+#===============================================================================
+def parseSheBang(she_bang):
+  result = re.match('^#! *([\w]*) *$', she_bang)
+  
+  if result != None:
+    return result.group(1)
+  else:
+    return None
+
 
 #===============================================================================
 # Main function
@@ -217,6 +231,17 @@ if __name__ == '__main__':
   # Send HTTP content type
   print 'Content-Type: text/html;charset=utf-8'  
   
+  # Build renderers map and add the 'pre' renderer
+  renderers = {}
+  renderers[None] = renderPre
+  renderers['pre'] = renderPre
+  
+  # Load other renderers from plugin folder
+  sys.path.insert(0, settings['renderers_path'])
+  for renderer_file in os.listdir(settings['renderers_path']):
+    if renderer_file.endswith('.py'):
+      renderer_module = execfile(os.path.join(settings['renderers_path'], renderer_file))
+   
   # Build site context
   site = {}
   site['title'] = settings['site_title']
@@ -261,26 +286,33 @@ if __name__ == '__main__':
   
   # Get real path of page
   page['path_real'] = realPath(page['path_resolved'])
-  
-  # Read content of page
+ 
+  # Get the pretty path
+  page['path'] = prettyPath(page['path_resolved']);
+ 
+  # Read she bang and raw content of page
   file = codecs.open(page['path_real'],
                      encoding='utf-8')
-  page['content_wiki'] = file.read()
+  page['content_all'] = file.readlines()
   file.close()
   
-  # Create creole parser to parse file to HTML
-  creole_dialect = creoleparser.dialects.create_dialect(creoleparser.dialects.creole11_base,
-                                                        wiki_links_base_url = '/' + settings['base_name'] + '/',
-                                                        wiki_links_class_func = None,
-                                                        macro_func = None,
-                                                        indent_class = None)
+  # Extract and parse she bang
+  page['she_bang'] = parseSheBang(page['content_all'][0])
   
-  creole_parser = creoleparser.Parser(creole_dialect,
-                                      encoding = 'utf-8')
+  # Get content without she bang if she bang is valid or the full content otherwise
+  if page['she_bang'] != None and page['she_bang'] in renderers:
+    page['content_raw'] = ''.join(page['content_all'][1:])
+  else:
+    page['content_raw'] = ''.join(page['content_all'])
+   
+  # Find renderer for she bang
+  if page['she_bang'] in renderers:
+    page['renderer'] = renderers[page['she_bang']]
+  else:
+    page['renderer'] = renderers[None]
   
-  # Create HTML from file
-  page['content'] = unicode(creole_parser(page['content_wiki']), 
-                            encoding = 'utf-8')
+  # Render content using found renderer
+  page['content'] = page['renderer'](page['content_raw'])
   
   # Load template
   jinja2_loader = jinja2.FileSystemLoader(settings['template_path'],

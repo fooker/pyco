@@ -1,0 +1,40 @@
+#! creole
+For building homepages CMSs are one of the best ways. It allows you to seperate the content from the design. The content can be organized by articles, categories and tags.
+But most pages, are smal pages to provide specific information for a single project / person. These pages are commonly managed by a single administrator.
+For those pages there is no need for a user management with serveral roles, a big database, and a plugin system and you need a lot of time to learn handling of such a CMS.
+
+
+The PyCo project is developed from an idea during the easter holidays to avoid the problems above.
+It combinates a filesystem sub-tree, a markup language and a template engine to make it possible to build static homepages in a fast way.
+
+This allows to build a home page very fast. You can build the page template and can start to create articles by creating files.
+
+I have held an talk about PyCo on the [[http://nop.hs-fulda.org | Night of Projects]] (German). Recordings of the talk are available [[http://nop.hs-fulda.org/index.py/Fahrplan | here]].
+
+
+== Why use PyCo ==
+PyCo is a page management system which allows to create a static home page in a fast and easy way without a web driven admin interface and other junk.
+
+
+== Technical overview ==
+PyCo is a fast CGI module written in python. It conists of three parts:
+
+**Filesystem Tree:**
+The filesystem tree represents the article layout of the page. The file system tree is directly transformed into the page tree.
+
+**Renderers:**
+To design the content pages PyCo uses a [[Projects/PyCo/Renderers | renderers]]. The renderers are snippets of code rendering the content file to some sort of HTML output. There is a growing list of these renderers.
+
+**Template Engine:**
+To create the fully blown home page from the content PyCo uses the [[http://jinja.pocoo.org/2/|Jinja]] template engine to create the HTML output.
+
+
+== Download ==
+//PyCo is just a script hacked in a short time. It is **currently in a beta state**. It will work in most cases - but future versions maybe break the API.//
+
+Currently there is no download archive available. But the latest version can be received by git:
+[[https://github.com/fooker/pyco]]
+
+
+== Licence ==
+PyCo is open source and licenced under the GPL 3. You can read and download the licence under [[http://gplv3.fsf.org/]].

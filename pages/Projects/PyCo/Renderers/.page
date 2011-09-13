@@ -1,0 +1,20 @@
+#! creole
+PyCo comes with a easy extendable list of renderers to transform the file content to HTML output.
+
+To tell PyCo which renderer should be used to render the file content of a specific file, a shebang (or hashbang) is used. The shebang must be starting on the first character of the first line of the file and must contain only the name of the renderer prefixed by //#!//.
+
+An example using the [[Projects/PyCo/Renderers/Creole | Creole Renderer]]:
+
+{{{
+#! creole
+This is the content of the file...
+}}}
+
+== Available Renderers ==
+The following list shows all currently available renderers:
+
+|= Name                                                      |= Shebang        |= Description
+|Preformated                                                 |pre              |Displays the file content as preformated text
+|Inline                                                      |inline           |Displays the raw file content
+|[[Projects/PyCo/Renderers/Creole | Creole]]                 |creole           |Formating content pages using the [[http://www.wikicreole.org | creole syntax]]
+|[[Projects/PyCo/Renderers/SmoothGallery | SmoothGallery]]   |smoothgallery    |Using [[http://smoothgallery.jondesign.net/what/ | SmoothGallery]] to display a picture gallery
