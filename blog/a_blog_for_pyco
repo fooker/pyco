@@ -1,0 +1,7 @@
+I'm proud to present the //blog// renderer for [[Projects/PyCo | PyCo]].
+
+The blog allows to show a bunch of articles in a folder in a typical blog layout.
+
+The blog is configured using //JSON// and each article of the blog is a simple file somewhere on the disk. The only configuration required is to point the blog renderer to the directory containing the articles of the blog. Additional, for each article a small block of meta data is required.
+
+This renderer is fare away from turning PyCo into a full featured blog. But it helps me to post some stuff from time to time.

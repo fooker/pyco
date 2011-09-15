@@ -316,3 +316,22 @@ th {
 td {
   border-top:			1px dotted {{ style_menu_li }};
 }
+
+ol.blog {
+  padding:				0;
+}
+
+ol.blog li {
+  list-style-type:	none;
+
+}
+
+ol.blog li h2 {
+  margin:					0;
+}
+
+ol.blog li p.info {
+  margin:					20px 0 0 10px;
+	color:					{{ style_header_fg }};
+	float:					right;
+}

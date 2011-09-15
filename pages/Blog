@@ -1,0 +1,21 @@
+#! blog
+{
+  "path" : "/blog",
+
+  "posts" : [
+    {
+      "titel"    : "Jump to Line",
+		  "date"     : "2011-09-15",
+			"autor"    : "fooker",
+		  "renderer" : "creole",
+			"file"     : "jump_to_line"
+    },
+		{
+      "titel"    : "A Blog for PyCo",
+		  "date"     : "2011-09-15",
+			"autor"    : "fooker",
+		  "renderer" : "creole",
+			"file"     : "a_blog_for_pyco"
+		}
+  ]
+}
