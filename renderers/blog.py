@@ -42,7 +42,7 @@ def renderBlog(content):
   output += '<ol class="blog">'
 
   for post in blog['posts']:
-    output += '<li>'
+    output += '<li class="blog">'
     
     output += '<p class="info">'
     output += post['autor']
