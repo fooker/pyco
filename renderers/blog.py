@@ -45,13 +45,13 @@ def renderBlog(content):
     output += '<li class="blog">'
     
     output += '<p class="info">'
-    output += post['autor']
+    output += post['author']
     output += '@'
     output += post['date']
     output += '</p>'
     
     output += '<h2>'
-    output += post['titel']
+    output += post['title']
     output += '</h2>'
     
     if post['renderer'] in renderers:
